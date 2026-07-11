@@ -109,4 +109,19 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('✅ Puntaje guardado con éxito en la tabla jugadores:', puntajeFinal);
         }
     };
+    
 });
+// Diagnóstico en pantalla
+window.onerror = function(msg, url, line) {
+    const errorDiv = document.createElement('div');
+    errorDiv.style.position = 'fixed';
+    errorDiv.style.bottom = '10px';
+    errorDiv.style.left = '10px';
+    errorDiv.style.background = 'red';
+    errorDiv.style.color = 'white';
+    errorDiv.style.padding = '10px';
+    errorDiv.style.zIndex = '9999';
+    errorDiv.innerText = `Error: ${msg} en línea ${line}`;
+    document.body.appendChild(errorDiv);
+};
+
