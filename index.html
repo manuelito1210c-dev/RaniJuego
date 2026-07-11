@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cherry On Top - Birthday Trivia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            /* Fondo oscuro con un degradado sutil rojo cereza/negro */
+            background: linear-gradient(135deg, #0a0a0a 0%, #2b040a 50%, #1a0004 100%);
+            color: white;
+        }
+        .glass-card {
+            /* Efecto Glassmorphism */
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+        }
+        .glow-input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #7a0016;
+            transition: all 0.3s ease;
+        }
+        .glow-input:focus {
+            outline: none;
+            border-color: #d80027;
+            box-shadow: 0 0 12px rgba(216, 0, 39, 0.4);
+        }
+        .btn-cherry {
+            background: linear-gradient(135deg, #a3001e 0%, #5c0011 100%);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-cherry:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body class="h-screen w-full flex items-center justify-center font-sans overflow-hidden">
+    
+    <div class="absolute top-0 left-0 w-64 h-64 bg-red-800 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+    <div class="absolute bottom-0 right-0 w-80 h-80 bg-rose-900 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+
+    <div class="glass-card w-11/12 max-w-sm p-8 rounded-3xl relative z-10 flex flex-col items-center">
+        <h1 class="text-5xl font-serif italic text-white mb-1 tracking-wider text-center">
+            Cherry
+        </h1>
+        <h2 class="text-2xl font-light text-red-200 mb-8 text-center opacity-80">
+            On Top
+        </h2>
+
+        <div class="w-full space-y-6">
+            <div>
+                <label for="nickname" class="block text-xs font-semibold text-red-300 uppercase tracking-widest mb-2 ml-1 opacity-80">Tu Nickname</label>
+                <input type="text" id="nickname" placeholder="Ej. PartyQueen" 
+                       class="glow-input w-full px-4 py-3 rounded-xl text-white placeholder-gray-600 text-center text-lg">
+            </div>
+            
+            <button class="btn-cherry w-full py-4 rounded-xl text-white font-bold text-lg tracking-wider shadow-lg mt-2">
+                UNIRSE AL JUEGO
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>
