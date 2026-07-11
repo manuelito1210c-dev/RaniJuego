@@ -1,20 +1,26 @@
 /* =========================================
-   SISTEMA DE DISEÑO: ANIMACIONES & EFECTOS
+   SISTEMA DE DISEÑO MÓVIL: TEXTURAS & EFECTOS
    ========================================= */
 
-/* 1. Malla de Puntos Suaves (Dot Matrix) en lugar de grilla rígida */
 .bg-dot-pattern {
     background-image: radial-gradient(rgba(244, 63, 94, 0.1) 1.5px, transparent 1.5px);
     background-size: 24px 24px;
 }
 
-/* 2. Máscara de Desvanecimiento Radial */
 .mask-radial-faded {
-    mask-image: radial-gradient(circle at center, black 10%, transparent 80%);
-    -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 80%);
+    mask-image: radial-gradient(circle at center, black 20%, transparent 90%);
+    -webkit-mask-image: radial-gradient(circle at center, black 20%, transparent 90%);
 }
 
-/* 3. Gradiente de Texto Animado */
+/* Orbe Ambiental que "respira" solo */
+@keyframes ambientGlow {
+    0%, 100% { transform: translate(-50%, -10%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%, 10%) scale(1.1); opacity: 0.8; }
+}
+.animate-ambient-glow {
+    animation: ambientGlow 6s ease-in-out infinite;
+}
+
 .animate-gradient-text {
     background-size: 200% auto;
     animation: textGradient 4s linear infinite;
@@ -25,40 +31,31 @@
     100% { background-position: 0% 50%; }
 }
 
-/* 4. Tarjeta Glassmorphism Extra-Suave */
 .glass-card {
     background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(244, 63, 94, 0.1);
     box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
-/* 5. Botón CTA con Efecto Border Beam Dulcificado */
 .btn-border-beam {
-    position: relative;
-    overflow: hidden;
-    border-radius: 1rem; /* rounded-2xl */
-    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-.btn-border-beam:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 35px -10px rgba(225, 29, 72, 0.6); /* Glow Rosado al hacer hover */
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px -10px rgba(225, 29, 72, 0.5); 
 }
 .btn-border-beam::before {
     content: '';
     position: absolute;
-    inset: -40px; 
-    /* Colores: Bordó oscuro -> Rosa Brillante -> Rojo Cereza */
+    inset: -50px; 
     background: conic-gradient(from 90deg at 50% 50%, transparent 50%, rgba(244, 63, 94, 0.9) 75%, rgba(159, 18, 57, 1) 100%);
     z-index: 0;
-    animation: spinBeam 3s linear infinite;
+    animation: spinBeam 2.5s linear infinite;
 }
 .btn-border-beam::after {
     content: '';
     position: absolute;
     inset: 1.5px;
-    background: #1f050b; /* Fondo interno combinando con el tema */
+    background: #1f050b; 
     border-radius: inherit;
     z-index: 0;
 }
@@ -67,25 +64,28 @@
     100% { transform: rotate(360deg); }
 }
 
-/* 6. Animación de Corazones Flotantes */
+/* Efecto Ripple al Tocar la Pantalla */
+.ripple {
+    transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+}
+.ripple.animate {
+    transform: scale(2.5);
+    opacity: 0;
+}
+
+/* Animación de Corazones Flotantes */
 .floating-heart {
     position: absolute;
     bottom: -10vh;
     opacity: 0;
     z-index: 1;
-    filter: drop-shadow(0 0 8px rgba(159, 18, 57, 0.6)); /* Glow bordó en los corazones */
+    filter: drop-shadow(0 0 8px rgba(159, 18, 57, 0.5));
     animation: floatUp linear forwards;
 }
 @keyframes floatUp {
-    0% {
-        transform: translateY(0) scale(0.6) rotate(-15deg);
-        opacity: 0;
-    }
+    0% { transform: translateY(0) scale(0.6) rotate(-15deg); opacity: 0; }
     10% { opacity: 0.8; }
     50% { transform: translateY(-50vh) scale(1.1) rotate(15deg); }
     90% { opacity: 0.8; }
-    100% {
-        transform: translateY(-110vh) scale(0.6) rotate(-15deg);
-        opacity: 0;
-    }
+    100% { transform: translateY(-110vh) scale(0.6) rotate(-15deg); opacity: 0; }
 }
