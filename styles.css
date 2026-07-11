@@ -1,0 +1,77 @@
+/* =========================================
+   SISTEMA DE DISEÑO: ANIMACIONES & EFECTOS
+   ========================================= */
+
+/* 1. Malla (Grid) de Fondo Fina */
+.bg-grid-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.03)'%3E%3Cpath d='M0 .5H31.5V32'/%3E%3C/svg%3E");
+}
+
+/* 2. Máscara de Desvanecimiento (Fade) */
+.mask-radial-faded {
+    mask-image: radial-gradient(circle at center, black 20%, transparent 80%);
+    -webkit-mask-image: radial-gradient(circle at center, black 20%, transparent 80%);
+}
+
+/* 3. Gradiente de Texto Animado */
+.animate-gradient-text {
+    background-size: 200% auto;
+    animation: textGradient 4s linear infinite;
+}
+@keyframes textGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* 4. Tarjeta Glassmorphism Premium */
+.glass-card {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+/* 5. Botón CTA con Efecto Border Beam (Tonos Cereza/Dorado) */
+.btn-border-beam {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.75rem; /* rounded-xl */
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.btn-border-beam:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px -10px rgba(225, 29, 72, 0.5); /* Sombra Rose */
+}
+.btn-border-beam::before {
+    content: '';
+    position: absolute;
+    inset: -40px; 
+    /* Gradiente que gira: Transparente -> Cereza -> Dorado -> Transparente */
+    background: conic-gradient(from 90deg at 50% 50%, transparent 50%, rgba(225, 29, 72, 0.9) 75%, rgba(251, 191, 36, 1) 100%);
+    z-index: 0;
+    animation: spinBeam 3s linear infinite;
+}
+.btn-border-beam::after {
+    content: '';
+    position: absolute;
+    inset: 1.5px; /* Grosor del borde iluminado */
+    background: #0f0f11; /* Fondo muy oscuro, casi negro */
+    border-radius: inherit;
+    z-index: 0;
+}
+@keyframes spinBeam {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 6. Glow Hover para el Badge */
+.glow-hover {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.glow-hover:hover {
+    border-color: rgba(225, 29, 72, 0.4);
+    box-shadow: 0 0 20px rgba(225, 29, 72, 0.15) inset;
+}
+
