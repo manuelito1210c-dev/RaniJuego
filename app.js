@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 1000);
         }
 
-        function finishQuiz() {
+                function finishQuiz() {
             // Estado visual de finalización
             questionText.style.opacity = 0;
             optionsContainer.style.opacity = 0;
@@ -287,6 +287,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 optionsContainer.style.opacity = 1;
             }, 300);
 
+            // 1. Último broadcast para actualizar la UI de los demás celulares
+            if (typeof window.broadcastScore === 'function') {
+                window.broadcastScore(currentScore);
+            }
+
+            // 2. Guardar el puntaje oficialmente en la base de datos
+            if (typeof window.guardarPuntajeFinal === 'function') {
+                window.guardarPuntajeFinal(playerNickname, currentScore);
+            }
+
+            // Guardamos el puntaje final en la sesión para que leaderboard.js pueda leerlo si es necesario
+            sessionStorage.setItem('finalScore', currentScore);
+
+            // Redirigir a la pantalla del ranking (Leaderboard) después de 3 segundos
+            setTimeout(() => {
+                window.location.href = 'leaderboard.html';
+            }, 3000);
+                }
+        
             // Un último broadcast de seguridad para asegurar que el ranking tenga el dato final
             if (typeof window.broadcastScore === 'function') {
                 window.broadcastScore(currentScore);
