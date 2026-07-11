@@ -89,3 +89,93 @@
     90% { opacity: 0.8; }
     100% { transform: translateY(-110vh) scale(0.6) rotate(-15deg); opacity: 0; }
 }
+/* =========================================
+   SISTEMA DE DISEÑO MÓVIL: QUIZ VIEW
+   ========================================= */
+
+.bg-dot-pattern {
+    background-image: radial-gradient(rgba(244, 63, 94, 0.08) 1.5px, transparent 1.5px);
+    background-size: 20px 20px;
+}
+
+.mask-radial-faded {
+    mask-image: radial-gradient(circle at center, black 30%, transparent 90%);
+    -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 90%);
+}
+
+@keyframes ambientGlow {
+    0%, 100% { transform: translate(-50%, -10%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%, 10%) scale(1.1); opacity: 0.8; }
+}
+.animate-ambient-glow {
+    animation: ambientGlow 6s ease-in-out infinite;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.glass-btn {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Animación del Temporizador */
+@keyframes timerShrink {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+.animate-timer {
+    animation: timerShrink 15s linear forwards;
+}
+
+/* Efecto Ripple Táctil */
+.ripple {
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+}
+.ripple.animate {
+    transform: scale(3.5);
+    opacity: 0;
+}
+
+/* =========================================
+   ESTADOS DE RESPUESTA (FEEDBACK VISUAL)
+   ========================================= */
+
+/* Opción Seleccionada (antes de revelar) */
+.quiz-option.selected {
+    background: rgba(244, 63, 94, 0.2); /* Fondo rosado sutil */
+    border-color: rgba(244, 63, 94, 0.6);
+    box-shadow: 0 0 15px rgba(244, 63, 94, 0.2);
+}
+.quiz-option.selected div {
+    background: rgba(244, 63, 94, 1);
+    border-color: rgba(244, 63, 94, 1);
+}
+
+/* Opción Correcta (Verde Esmeralda Tierno) */
+.quiz-option.correct {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.8);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+    color: #fff;
+}
+.quiz-option.correct div {
+    background: rgba(16, 185, 129, 1);
+    border-color: rgba(16, 185, 129, 1);
+}
+
+/* Opción Incorrecta (Opacada) */
+.quiz-option.incorrect {
+    opacity: 0.5;
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Deshabilitar botones */
+.quiz-option.disabled {
+    pointer-events: none;
+}
+
