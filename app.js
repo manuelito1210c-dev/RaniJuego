@@ -115,16 +115,79 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (timerBar && questionText && optionsContainer) {
         
-        const quizQuestions = [
-            { question: "¿Cuál es su comida favorita absoluta?", options: ["Matambre a la pizza", "Empanadas de carne con limón", "Pizza", "Milanesas Napolitanas con Papas"], answer: 1 },
-            { question: "¿Cuál es su color favorito?", options: ["Rosa", "Le gustan todos los colores", "Bordó", "Rojo"], answer: 1 },
-            { question: "¿Qué es lo que más le gusta hacer en su tiempo libre?", options: ["Cocinar", "Salir a pasear y tomar fotos", "Conocer pueblitos, caminar por la naturaleza", "Salir de compras"], answer: 2 },
-            { question: "Si pudiera viajar a cualquier lugar del mundo mañana mismo, ¿a dónde iría?", options: ["París", "Venecia", "Misiones (las Cataratas)", "Chaco"], answer: 0 },
-            { question: "¿Qué bebida es su favorita?", options: ["Fernet", "Vino", "Gancia", "Gin Tonic"], answer: 3 },
-            { question: "¿Prefiere el dulce o el salado?", options: ["Dulce", "Salado", "Ambos"], answer: 1 }
-            // Agrega aquí el resto de las preguntas...
+                const quizQuestions = [
+            { 
+                question: "¿Cuál es su comida favorita absoluta?", 
+                options: ["Matambre a la pizza", "Empanadas de carne con limón", "Pizza", "Milanesas Napolitanas con Papas"], 
+                answer: 1 
+            },
+            { 
+                question: "¿Cuál es su color favorito?", 
+                options: ["Rosa", "Le gustan todos los colores", "Bordó", "Rojo"], 
+                answer: 1 
+            },
+            { 
+                question: "¿Qué es lo que más le gusta hacer en su tiempo libre?", 
+                options: ["Cocinar", "Salir a pasear y tomar fotos", "Conocer pueblitos, caminar por la naturaleza", "Salir de compras"], 
+                answer: 2 
+            },
+            { 
+                question: "Si pudiera viajar a cualquier lugar del mundo mañana mismo, ¿a dónde iría?", 
+                options: ["París", "Venecia", "Misiones (las Cataratas)", "Chaco"], 
+                answer: 0 
+            },
+            { 
+                question: "¿Qué bebida es su favorita?", 
+                options: ["Fernet", "Vino", "Gancia", "Gin Tonic"], 
+                answer: 3 
+            },
+            { 
+                question: "Se dice que su serie y película favorita que vería una y otra vez son Breaking Bad (serie) y Orgullo y Prejuicio (película). ¿Verdadero o falso?", 
+                options: ["Verdadero", "Falso"], 
+                answer: 0 
+            },
+            { 
+                question: "¿Prefiere el dulce o el salado?", 
+                options: ["Dulce", "Salado", "Ambos"], 
+                answer: 1 
+            },
+            { 
+                question: "¿Cuál es tu cantante favorito?", 
+                options: ["Enrique Iglesias", "Ricardo Arjona", "Ricardo Montaner", "Cristian Castro"], 
+                answer: 3 
+            },
+            { 
+                question: "Tik Tok es la app que tiene más tiempo abierta en su teléfono 🤭. ¿Verdadero o Falso?", 
+                options: ["Verdadero", "Falso"], 
+                answer: 1 
+            },
+            { 
+                question: "Ganó un torneo de Newcom (un deporte alternativo). ¿Verdadero o Falso?", 
+                options: ["Verdadero", "Falso"], 
+                answer: 0 
+            },
+            { 
+                question: "Frase que la define y que dice siempre:", 
+                options: ["El éxito es la suma de pequeños esfuerzos diarios", "Un café más y arranco, lo prometo.", "No sé qué hago, pero lo estoy haciendo con estilo.", "Mi plan es que todo salga bien por arte de magia."], 
+                answer: 0 
+            },
+            { 
+                question: "¿Qué prefiere consumir a la hora del desayuno?", 
+                options: ["Té con pan casero", "Mate con galletitas con dulce de leche", "Café con leche y 2 medialunas", "No desayuna nada"], 
+                answer: 2 
+            },
+            { 
+                question: "¿Estación favorita del año?", 
+                options: ["Invierno", "Otoño", "Verano", "Primavera"], 
+                answer: 1 
+            },
+            { 
+                question: "Sus accesorios tienen que ser dorados siempre, siempre. ¿Verdadero o falso?", 
+                options: ["Verdadero", "Falso"], 
+                answer: 1 
+            }
         ];
-
+        
         let currentQuestionIndex = 0;
         let currentScore = 0;
         let timeRemaining = 15;
