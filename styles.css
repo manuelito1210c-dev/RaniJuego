@@ -144,3 +144,57 @@
 .quiz-option.disabled {
     pointer-events: none;
 }
+
+/* =========================================
+   LEADERBOARD (PODIO Y RANKING)
+   ========================================= */
+
+/* Crecimiento animado de las barras del podio */
+.podium-bar {
+    height: 0;
+    animation: growPodium 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes growPodium {
+    to { height: var(--target-height); }
+}
+
+.animate-fade-in {
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out forwards;
+    animation-delay: inherit;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+/* Scrollbar invisible para un look premium en móviles */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(225, 29, 72, 0.2);
+    border-radius: 10px;
+}
+
+/* Tarjeta individual de la lista (4to lugar en adelante) */
+.ranking-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+.ranking-item:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.05);
+}
