@@ -1,68 +1,162 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cherry On Top - Birthday Trivia</title>
+    <title>Hero Premium - System UI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            /* Fondo oscuro con un degradado sutil rojo cereza/negro */
-            background: linear-gradient(135deg, #0a0a0a 0%, #2b040a 50%, #1a0004 100%);
-            color: white;
+        /* =========================================
+           SISTEMA DE DISEÑO: ANIMACIONES & EFECTOS
+           ========================================= */
+        
+        /* 1. Malla (Grid) de Fondo Fina */
+        .bg-grid-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.04)'%3E%3Cpath d='M0 .5H31.5V32'/%3E%3C/svg%3E");
         }
-        .glass-card {
-            /* Efecto Glassmorphism */
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+
+        /* 2. Máscara de Desvanecimiento (Fade) */
+        .mask-radial-faded {
+            mask-image: radial-gradient(circle at center, black 10%, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 80%);
         }
-        .glow-input {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid #7a0016;
-            transition: all 0.3s ease;
+
+        /* 3. Gradiente de Texto Animado */
+        .animate-gradient-text {
+            background-size: 200% auto;
+            animation: textGradient 6s linear infinite;
         }
-        .glow-input:focus {
-            outline: none;
-            border-color: #d80027;
-            box-shadow: 0 0 12px rgba(216, 0, 39, 0.4);
+        @keyframes textGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        .btn-cherry {
-            background: linear-gradient(135deg, #a3001e 0%, #5c0011 100%);
-            transition: transform 0.2s, box-shadow 0.2s;
+
+        /* 4. Botón CTA con Efecto Border Beam */
+        .btn-border-beam {
+            position: relative;
+            overflow: hidden;
+            border-radius: 9999px; /* Pill shape */
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        .btn-cherry:active {
-            transform: scale(0.96);
+        .btn-border-beam:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(168, 85, 247, 0.4); /* Sombra Violeta */
+        }
+        .btn-border-beam::before {
+            content: '';
+            position: absolute;
+            /* El gradiente cónico rota creando el destello perimetral */
+            inset: -40px; 
+            background: conic-gradient(from 90deg at 50% 50%, transparent 50%, rgba(168, 85, 247, 0.8) 75%, rgba(6, 182, 212, 1) 100%);
+            z-index: -1;
+            animation: spinBeam 3s linear infinite;
+        }
+        .btn-border-beam::after {
+            content: '';
+            position: absolute;
+            inset: 1px; /* Grosor del borde (1px) */
+            background: #09090b; /* bg-zinc-950 igual al fondo general */
+            border-radius: inherit;
+            z-index: -1;
+        }
+        @keyframes spinBeam {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 5. Glow Hover para Tarjetas/Badges */
+        .glow-hover {
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glow-hover:hover {
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.15) inset;
         }
     </style>
 </head>
-<body class="h-screen w-full flex items-center justify-center font-sans overflow-hidden">
-    
-    <div class="absolute top-0 left-0 w-64 h-64 bg-red-800 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
-    <div class="absolute bottom-0 right-0 w-80 h-80 bg-rose-900 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+<body class="bg-zinc-950 text-zinc-50 font-sans antialiased selection:bg-purple-500/30 selection:text-white min-h-screen relative overflow-hidden flex flex-col justify-center">
 
-    <div class="glass-card w-11/12 max-w-sm p-8 rounded-3xl relative z-10 flex flex-col items-center">
-        <h1 class="text-5xl font-serif italic text-white mb-1 tracking-wider text-center">
-            Cherry
+    <!-- LUZ DEL CURSOR (Spotlight) -->
+    <div id="mouse-glow" class="pointer-events-none absolute -top-1/2 -left-1/2 w-96 h-96 bg-purple-600/20 rounded-full blur-[100px] z-0 mix-blend-screen opacity-0 transition-opacity duration-500"></div>
+
+    <!-- FONDO INTERACTIVO GRID -->
+    <div class="absolute inset-0 z-0 bg-grid-pattern mask-radial-faded pointer-events-none"></div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="relative z-10 w-full max-w-5xl mx-auto px-6 text-center flex flex-col items-center">
+        
+        <!-- Badge Superior -->
+        <a href="#" class="glow-hover inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/5 bg-white/5 backdrop-blur-sm text-xs font-medium text-zinc-300 mb-8 cursor-pointer">
+            <span class="flex h-2 w-2 rounded-full bg-cyan-400 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+            </span>
+            Supabase Realtime Integrado <span class="text-zinc-500 ml-1">→</span>
+        </a>
+
+        <!-- Título -->
+        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 max-w-4xl">
+            Construye el futuro a 
+            <span class="animate-gradient-text bg-clip-text text-transparent bg-gradient-to-r from-zinc-100 via-purple-400 to-cyan-400">
+                velocidad luz.
+            </span>
         </h1>
-        <h2 class="text-2xl font-light text-red-200 mb-8 text-center opacity-80">
-            On Top
-        </h2>
 
-        <div class="w-full space-y-6">
-            <div>
-                <label for="nickname" class="block text-xs font-semibold text-red-300 uppercase tracking-widest mb-2 ml-1 opacity-80">Tu Nickname</label>
-                <input type="text" id="nickname" placeholder="Ej. PartyQueen" 
-                       class="glow-input w-full px-4 py-3 rounded-xl text-white placeholder-gray-600 text-center text-lg">
-            </div>
-            
-            <button class="btn-cherry w-full py-4 rounded-xl text-white font-bold text-lg tracking-wider shadow-lg mt-2">
-                UNIRSE AL JUEGO
+        <!-- Subtítulo -->
+        <p class="text-lg md:text-xl text-zinc-400 font-light mb-10 max-w-2xl leading-relaxed">
+            Componentes modulares de élite para agencias y startups de alto valor. Diseño impecable, interacciones magnéticas y arquitectura lista para escalar.
+        </p>
+
+        <!-- CTAs -->
+        <div class="flex flex-col sm:flex-row items-center gap-4">
+            <!-- Botón Principal con Border Beam -->
+            <button class="btn-border-beam px-8 py-3.5 text-sm font-semibold tracking-wide text-zinc-100 group flex items-center gap-2">
+                <span>Comenzar a Crear</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </button>
+
+            <!-- Botón Secundario Minimalista -->
+            <button class="px-8 py-3.5 rounded-full text-sm font-medium text-zinc-300 hover:text-white transition-colors duration-300 hover:bg-white/5">
+                Ver Documentación
             </button>
         </div>
-    </div>
+    </main>
 
+    <!-- LOGICA JAVASCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const glow = document.getElementById('mouse-glow');
+            let isMouseIn = false;
+
+            // Transición suave de entrada/salida de la luz
+            document.addEventListener('mouseenter', () => {
+                glow.style.opacity = '1';
+                isMouseIn = true;
+            });
+            
+            document.addEventListener('mouseleave', () => {
+                glow.style.opacity = '0';
+                isMouseIn = false;
+            });
+
+            // Lógica de Spotlight ultra-optimizada usando requestAnimationFrame
+            document.addEventListener('mousemove', (e) => {
+                if (!isMouseIn) {
+                    glow.style.opacity = '1';
+                    isMouseIn = true;
+                }
+                
+                const x = e.clientX;
+                const y = e.clientY;
+                
+                // Centrar el div del glow (w-96 h-96 = 384px, offset = 192px)
+                requestAnimationFrame(() => {
+                    glow.style.transform = `translate(${x - 192}px, ${y - 192}px)`;
+                });
+            });
+        });
+    </script>
 </body>
 </html>
