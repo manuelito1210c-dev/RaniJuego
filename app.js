@@ -64,17 +64,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (navigator.vibrate) navigator.vibrate(15); 
         }, { passive: true });
     });
-
     // ==========================================
     // 2. LÓGICA: PANTALLA DE INGRESO (index.html)
     // ==========================================
-    const btnStart = document.getElementById('btn-start');
+    const loginForm = document.getElementById('login-form');
     const nicknameInput = document.getElementById('nickname');
 
-    if (btnStart && nicknameInput) {
-        btnStart.addEventListener('click', () => {
+    if (loginForm && nicknameInput) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Fundamental: Evita que la página se recargue al presionar "Enter" en el celular
+            
             const nickname = nicknameInput.value.trim();
             
+            // Validación visual de error (Efecto Shake) si está vacío
             if (!nickname) {
                 nicknameInput.style.transition = 'transform 0.1s ease-in-out';
                 nicknameInput.classList.add('border-rose-500', 'bg-rose-950/40');
@@ -88,18 +90,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // Guardamos el usuario en la sesión
             sessionStorage.setItem('currentPlayer', nickname);
             
+            // Transición fluida de salida de pantalla
             document.querySelector('main').style.opacity = '0';
             document.querySelector('main').style.transform = 'translateY(-20px) scale(0.95)';
             document.querySelector('main').style.transition = 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
             
+            // Redirección hacia la pantalla de preguntas
             setTimeout(() => {
                 window.location.href = 'quiz.html'; 
             }, 500);
         });
-    } // <-- ¡FALTABA ESTA LLAVE DE CIERRE AQUÍ!
-
+    }
+    
     // ==========================================
     // 3. LÓGICA: PANTALLA DE JUEGO (quiz.html)
     // ==========================================
