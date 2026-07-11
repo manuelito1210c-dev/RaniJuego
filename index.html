@@ -2,79 +2,71 @@
 <html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Susi's Birthday | Cherry on Top</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tu hoja de estilos -->
     <link rel="stylesheet" href="styles.css">
-    <!-- Configuración para inyectar el color cereza profundo de fondo -->
+    <!-- Paleta de colores Dark Luxury -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        cherry: {
-                            950: '#140306', /* Negro con tinte bordó */
-                        }
+                        cherry: { 950: '#140306' }
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="bg-cherry-950 text-zinc-50 font-sans antialiased selection:bg-rose-400/40 selection:text-white min-h-screen relative overflow-hidden flex flex-col justify-center items-center">
+<body class="bg-cherry-950 text-zinc-50 font-sans antialiased overflow-hidden selection:bg-rose-400/40">
 
-    <!-- Contenedor para los corazones flotantes dinámicos -->
+    <!-- Sistema de Partículas Tierno (Corazones) -->
     <div id="floating-hearts-container" class="absolute inset-0 z-0 overflow-hidden pointer-events-none"></div>
 
-    <!-- Luz del cursor suave (Spotlight) -->
-    <div id="mouse-glow" class="pointer-events-none absolute -top-1/2 -left-1/2 w-96 h-96 bg-rose-600/15 rounded-full blur-[100px] z-0 mix-blend-screen opacity-0 transition-opacity duration-500"></div>
+    <!-- Orbe de Luz Ambiental (Reemplazo del Spotlight para móviles) -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-64 h-64 bg-rose-600/20 rounded-full blur-[80px] z-0 animate-ambient-glow pointer-events-none"></div>
 
-    <!-- Fondo de puntos (Dot Pattern) más tierno que la grilla -->
+    <!-- Malla de puntos suaves -->
     <div class="absolute inset-0 z-0 bg-dot-pattern mask-radial-faded pointer-events-none"></div>
 
-    <!-- Contenedor Principal -->
-    <main class="relative z-10 w-full max-w-lg mx-auto px-6 flex flex-col items-center">
+    <!-- Contenedor Principal (100dvh asegura que ocupe la pantalla real del celular) -->
+    <main class="relative z-10 w-full h-[100dvh] flex flex-col items-center justify-center px-5">
         
-        <!-- Badge Superior (Suavizado) -->
-        <div class="glow-hover inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-rose-400/30 bg-rose-950/40 backdrop-blur-md text-xs font-medium text-rose-200 mb-8 shadow-[0_0_15px_rgba(225,29,72,0.15)]">
+        <div class="glow-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-rose-400/30 bg-rose-950/40 backdrop-blur-md text-[11px] font-medium text-rose-200 mb-6 shadow-[0_0_15px_rgba(225,29,72,0.15)] uppercase tracking-widest">
             <span class="flex h-2 w-2 rounded-full bg-rose-400 relative">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-300 opacity-75"></span>
             </span>
-            The Ultimate Birthday Quiz
+            Birthday Quiz
         </div>
 
-        <!-- Título principal -->
-        <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-3 text-center drop-shadow-lg">
+        <h1 class="text-5xl font-extrabold tracking-tight mb-2 text-center drop-shadow-lg leading-tight">
             <span class="block text-zinc-100">¿Qué tanto</span>
-            <!-- Gradiente ajustado a tonos más rosados y tiernos -->
             <span class="animate-gradient-text bg-clip-text text-transparent bg-gradient-to-r from-pink-300 via-rose-500 to-red-600">
                 conoces a Susi?
             </span>
         </h1>
 
-        <p class="text-xl text-rose-200/80 font-light mb-10 text-center italic font-serif tracking-wide drop-shadow-md">
+        <p class="text-lg text-rose-200/80 font-light mb-8 text-center italic font-serif tracking-wide drop-shadow-md">
             "She's the Cherry on Top" 🍒
         </p>
 
-        <!-- Tarjeta de Ingreso (Bordes más redondeados y suaves) -->
-        <div class="glass-card w-full p-8 rounded-[2rem] flex flex-col gap-6 relative overflow-hidden">
-            <!-- Brillo interno sutil en la tarjeta -->
+        <!-- Tarjeta de Ingreso Glassmorphism -->
+        <div class="glass-card w-full max-w-sm p-7 rounded-[2rem] flex flex-col gap-6 relative overflow-hidden">
             <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-rose-400/50 to-transparent"></div>
 
             <div class="flex flex-col gap-2 relative z-10">
-                <label for="nickname" class="text-xs font-semibold text-rose-300/80 uppercase tracking-widest pl-1">Tu Nickname</label>
-                <input type="text" id="nickname" placeholder="Ej: AmigoFiel ✨" 
-                       class="w-full bg-black/30 border border-rose-500/20 rounded-2xl px-5 py-4 text-white placeholder-zinc-500 focus:outline-none focus:border-rose-400/60 focus:ring-2 focus:ring-rose-500/20 transition-all duration-300 shadow-inner">
+                <label for="nickname" class="text-[11px] font-semibold text-rose-300/80 uppercase tracking-widest pl-1">Tu Nickname</label>
+                <input type="text" id="nickname" placeholder="Ej: AmigoFiel ✨" autocomplete="off" 
+                       class="w-full bg-black/30 border border-rose-500/20 rounded-2xl px-5 py-4 text-white placeholder-zinc-500 focus:outline-none focus:border-rose-400/60 focus:ring-2 focus:ring-rose-500/20 transition-all duration-300 shadow-inner text-center text-lg">
             </div>
 
-            <!-- Botón CTA con Border Beam ajustado a Bordó/Rosa -->
-            <button id="btn-start" class="btn-border-beam w-full py-4 text-sm font-bold tracking-widest text-zinc-100 group flex justify-center items-center gap-2 uppercase">
+            <!-- Botón CTA adaptado para toques (Sin focus de mouse, con Ripple) -->
+            <button id="btn-start" class="btn-border-beam w-full py-4 text-sm font-bold tracking-widest text-zinc-100 uppercase relative overflow-hidden active:scale-95 transition-transform duration-200 flex justify-center items-center">
                 <span class="relative z-10 drop-shadow-md">Ingresar al Juego</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 relative z-10 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
+                <!-- Elemento para el efecto Ripple táctil -->
+                <span class="ripple absolute bg-white/30 rounded-full pointer-events-none transform scale-0"></span>
             </button>
         </div>
     </main>
