@@ -91,3 +91,117 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
     });
 });
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- 1. CONFIGURACIÓN DEL TEMPORIZADOR ---
+    const timerBar = document.getElementById('timer-bar');
+    const options = document.querySelectorAll('.quiz-option');
+    let timeRemaining = 15;
+    let timerInterval;
+    let hasAnswered = false;
+
+    // Iniciar la animación CSS fluida
+    timerBar.classList.add('animate-timer');
+
+    // Control lógico del tiempo
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            
+            // Cuando el tiempo llega a 0
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                timerBar.style.animationPlayState = 'paused';
+                if (!hasAnswered) {
+                    revealAnswers(); // Revelar si se quedó sin tiempo
+                }
+            }
+        }, 1000);
+    }
+
+    startTimer();
+
+    // --- 2. LÓGICA DE SELECCIÓN TÁCTIL ---
+    options.forEach(button => {
+        
+        // Manejo del efecto Ripple y selección
+        button.addEventListener('touchstart', function(e) {
+            if (hasAnswered) return; // Si ya respondió, no hacer nada
+
+            // Ripple Effect
+            const touch = e.touches[0];
+            const rect = this.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+
+            const ripple = this.querySelector('.ripple');
+            ripple.classList.remove('animate');
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = `${size}px`;
+            ripple.style.left = `${x - size / 2}px`;
+            ripple.style.top = `${y - size / 2}px`;
+            ripple.style.opacity = '1';
+            ripple.style.transform = 'scale(0)';
+
+            window.requestAnimationFrame(() => {
+                ripple.classList.add('animate');
+            });
+
+            if (navigator.vibrate) navigator.vibrate(15); 
+        }, { passive: true });
+
+        // Al soltar el dedo (Confirmar respuesta)
+        button.addEventListener('click', function() {
+            if (hasAnswered) return;
+            hasAnswered = true;
+            
+            // Pausar el temporizador visual y lógico
+            clearInterval(timerInterval);
+            timerBar.style.animationPlayState = 'paused';
+
+            // Marcar la opción seleccionada visualmente
+            this.classList.add('selected');
+
+            // Deshabilitar todos los botones
+            options.forEach(opt => opt.classList.add('disabled'));
+
+            // Esperar 1.5 segundos para crear suspenso y revelar la correcta
+            setTimeout(() => {
+                revealAnswers(this);
+            }, 1500);
+        });
+    });
+
+    // --- 3. REVELAR RESPUESTAS Y ACTUALIZAR ESTADO ---
+    function revealAnswers(selectedButton = null) {
+        options.forEach(opt => {
+            // Limpiar la selección previa
+            opt.classList.remove('selected');
+            
+            // Verificar si es la correcta (usando data-correct del HTML)
+            if (opt.dataset.correct === "true") {
+                opt.classList.add('correct');
+                
+                // Si el jugador eligió esta, sumar puntos
+                if (selectedButton === opt) {
+                    const scoreDisplay = document.getElementById('score-display');
+                    // Simulación de puntos fijos
+                    let currentScore = parseInt(scoreDisplay.innerText);
+                    scoreDisplay.innerText = currentScore + 100;
+                    
+                    // Pequeña animación de victoria en el puntaje
+                    scoreDisplay.classList.add('text-green-400', 'scale-110');
+                    setTimeout(() => scoreDisplay.classList.remove('text-green-400', 'scale-110'), 500);
+                }
+            } else {
+                opt.classList.add('incorrect');
+            }
+        });
+
+        // Simular transición a la siguiente pregunta o al Ranking
+        setTimeout(() => {
+            console.log("Transición a la pantalla de Ranking/Siguiente Pregunta...");
+            // Aquí enviarías los datos a Supabase y cambiarías el DOM
+        }, 3000);
+    }
+});
