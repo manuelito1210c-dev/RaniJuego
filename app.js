@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // 3.5 Procesamiento de la respuesta y actualización en tiempo real
+                // 3.5 Procesamiento de la respuesta y actualización en tiempo real
         function processAnswer(selectedButton) {
             hasAnswered = true;
             clearInterval(timerInterval);
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (opt.dataset.correct === "true") {
                         opt.classList.add('correct');
                         if (selectedButton === opt) {
-                            // Sumar puntos por velocidad (estilo Kahoot) o fijos
+                            // Sumar puntos por velocidad (estilo Kahoot)
                             const pointsEarned = 100 + (timeRemaining * 10);
                             currentScore += pointsEarned;
                             scoreDisplay.innerText = currentScore;
@@ -248,8 +248,12 @@ document.addEventListener('DOMContentLoaded', () => {
                             scoreDisplay.classList.add('text-green-400', 'scale-125');
                             setTimeout(() => scoreDisplay.classList.remove('text-green-400', 'scale-125'), 500);
 
-                            // AQUÍ CONECTAS CON SUPABASE:
-                            // updateSupabaseScore(playerNickname, currentScore);
+                            // ==========================================
+                            // 🔥 INTEGRACIÓN SUPABASE REALTIME 🔥
+                            // ==========================================
+                            if (typeof window.broadcastScore === 'function') {
+                                window.broadcastScore(currentScore);
+                            }
                         }
                     } else {
                         opt.classList.add('incorrect');
@@ -265,9 +269,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function finishQuiz() {
-            questionText.innerText = "¡Completado!";
-            optionsContainer.innerHTML = `<div class="text-rose-200 text-lg">Puntaje final: ${currentScore}</div>`;
-            // Redirigir a leaderboard.html
+            // Estado visual de finalización
+            questionText.style.opacity = 0;
+            optionsContainer.style.opacity = 0;
+            
+            setTimeout(() => {
+                questionText.innerText = "¡Completado!";
+                questionText.style.opacity = 1;
+                
+                optionsContainer.innerHTML = `
+                    <div class="glass-card p-8 rounded-[2rem] text-center border border-rose-500/20 shadow-[0_0_20px_rgba(225,29,72,0.2)]">
+                        <div class="text-rose-200 text-sm tracking-widest uppercase mb-2">Tu Puntaje Final</div>
+                        <div class="text-5xl font-extrabold text-white mb-4 drop-shadow-lg">${currentScore}</div>
+                        <div class="w-10 h-10 mx-auto rounded-full border-t-2 border-rose-400 animate-spin"></div>
+                    </div>
+                `;
+                optionsContainer.style.opacity = 1;
+            }, 300);
+
+            // Un último broadcast de seguridad para asegurar que el ranking tenga el dato final
+            if (typeof window.broadcastScore === 'function') {
+                window.broadcastScore(currentScore);
+            }
+
+            // Redirigir a la pantalla del ranking (Leaderboard) después de 3 segundos
+            setTimeout(() => {
+                window.location.href = 'leaderboard.html';
+            }, 3000);
         }
 
         // Inicializar la primera pregunta
