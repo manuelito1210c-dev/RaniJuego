@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. INICIALIZACIÓN DE SUPABASE
     // ==========================================
     
-    // Reemplaza estos valores con los de tu proyecto en Supabase (Settings -> API)
     const SUPABASE_URL = 'https://eletrekvxjxaznfiumki.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZXRyZWt2eGp4YXpuZml1bWtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3MTc4MTMsImV4cCI6MjA5OTI5MzgxM30.r01AQNZB2h1ezsCKiT-TrwjQR3fkIQYJrA-kAP5L-YI';
 
@@ -15,13 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. CONFIGURACIÓN DEL CANAL (SALA DE JUEGO)
     // ==========================================
     
-    // Obtenemos el nombre del jugador guardado en sessionStorage (definido en app.js)
     const currentPlayer = sessionStorage.getItem('currentPlayer') || `Invitado_${Math.floor(Math.random() * 1000)}`;
     
-    // Creamos un canal único para el evento. Todos los celulares deben suscribirse aquí.
-    const quizRoom = supabase.channel('sala-cumple-susi', {
+    // 🔥 CORRECCIÓN: El canal debe llamarse exactamente igual que en leaderboard.js
+    const quizRoom = supabase.channel('cumple-susi-room', {
         config: {
-            broadcast: { self: false } // self: false evita que recibamos nuestros propios mensajes
+            broadcast: { self: false } 
         }
     });
 
@@ -31,11 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     quizRoom
         .on('broadcast', { event: 'score_update' }, (payload) => {
-            // Este bloque se ejecuta en milisegundos cuando OTRO jugador anota puntos
             const incomingData = payload.payload;
-            console.log(`📡 Competencia en vivo: ${incomingData.nickname} acaba de alcanzar ${incomingData.score} puntos!`);
+            console.log(`📡 Competencia en vivo: ${incomingData.nickname} alcanzó ${incomingData.score} puntos.`);
             
-            // Aquí puedes llamar a una función para actualizar el Leaderboard visual en el DOM
             actualizarRankingVisual(incomingData.nickname, incomingData.score);
         })
         .subscribe((status) => {
@@ -48,16 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. EMISIÓN DE EVENTOS (ENVÍO)
     // ==========================================
     
-    // Esta función se expone globalmente para que app.js pueda llamarla cuando el usuario acierte
     window.broadcastScore = async function(currentScore) {
-        
         const payload = {
             nickname: currentPlayer,
             score: currentScore,
             timestamp: new Date().toISOString()
         };
 
-        // Enviar el puntaje a todos los demás celulares conectados a la sala
         const { error } = await quizRoom.send({
             type: 'broadcast',
             event: 'score_update',
@@ -72,38 +65,40 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================
-    // 5. FUNCIONES AUXILIARES DE UI (Leaderboard)
+    // 5. FUNCIONES AUXILIARES DE UI (NOTIFICACIONES)
     // ==========================================
     
     function actualizarRankingVisual(jugador, puntaje) {
-        // Lógica de manipulación del DOM nativa para mostrar notificaciones o actualizar el ranking
-        // Ejemplo de micro-interacción: Un toast notification que aparece brevemente
-        
         const toast = document.createElement('div');
-        toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-md border border-rose-500/30 text-white px-4 py-2 rounded-full text-xs font-semibold shadow-lg z-50 transform transition-all duration-300 translate-y-[-100%] opacity-0';
-        toast.innerHTML = `🔥 <span class="text-rose-400">${jugador}</span> tiene ${puntaje} pts!`;
+        // Diseño Glassmorphism Premium unificado
+        toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-xl border border-rose-500/30 text-white px-5 py-2.5 rounded-full text-xs font-semibold shadow-[0_10px_30px_rgba(225,29,72,0.3)] z-50 transform transition-all duration-500 translate-y-[-150%] opacity-0 flex items-center gap-2';
+        toast.innerHTML = `
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+            </span>
+            <span class="text-rose-300">${jugador}</span> sumó puntos! 🔥
+        `;
         
         document.body.appendChild(toast);
         
-        // Animar entrada
         requestAnimationFrame(() => {
             toast.style.transform = 'translate(-50%, 0)';
             toast.style.opacity = '1';
         });
 
-        // Animar salida y remover del DOM para mantener el rendimiento
         setTimeout(() => {
-            toast.style.transform = 'translate(-50%, -100%)';
+            toast.style.transform = 'translate(-50%, -150%)';
             toast.style.opacity = '0';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
+            setTimeout(() => toast.remove(), 500);
+        }, 2500);
     }
-        // ==========================================
+
+    // ==========================================
     // 6. GUARDAR PUNTAJE FINAL EN BASE DE DATOS
     // ==========================================
     
     window.guardarPuntajeFinal = async function(nickname, puntajeFinal) {
-        // Usamos el cliente 'supabase' que ya inicializaste al principio de este archivo
         const { data, error } = await supabase
             .from('jugadores')
             .insert([{ nickname: nickname, score: puntajeFinal }]);
@@ -114,6 +109,4 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('✅ Puntaje guardado con éxito en la tabla jugadores:', puntajeFinal);
         }
     };
-    
 });
-
