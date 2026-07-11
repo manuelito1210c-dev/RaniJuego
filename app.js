@@ -89,78 +89,189 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = 'quiz.html'; 
             }, 500);
         });
-    }
+    
 
     // ==========================================
     // 3. LÓGICA: PANTALLA DE JUEGO (quiz.html)
     // ==========================================
     const timerBar = document.getElementById('timer-bar');
-    const options = document.querySelectorAll('.quiz-option');
+    const questionText = document.getElementById('question-text');
+    const optionsContainer = document.getElementById('options-container');
+    const scoreDisplay = document.getElementById('score-display');
 
-    // La condición 'if' asegura que esto solo corra en el quiz
-    if (timerBar && options.length > 0) {
+    if (timerBar && questionText && optionsContainer) {
+        
+        // Base de datos local de preguntas
+        const quizQuestions = [
+            { question: "¿Cuál es su comida favorita absoluta?", options: ["Matambre a la pizza", "Empanadas de carne con limón", "Pizza", "Milanesas Napolitanas con Papas"], answer: 1 },
+            { question: "¿Cuál es su color favorito?", options: ["Rosa", "Le gustan todos los colores", "Bordó", "Rojo"], answer: 1 },
+            { question: "¿Qué es lo que más le gusta hacer en su tiempo libre?", options: ["Cocinar", "Salir a pasear y tomar fotos", "Conocer pueblitos, caminar por la naturaleza", "Salir de compras"], answer: 2 },
+            { question: "Si pudiera viajar a cualquier lugar del mundo mañana mismo, ¿a dónde iría?", options: ["París", "Venecia", "Misiones (las Cataratas)", "Chaco"], answer: 0 },
+            { question: "¿Qué bebida es su favorita?", options: ["Fernet", "Vino", "Gancia", "Gin Tonic"], answer: 3 },
+            { question: "¿Prefiere el dulce o el salado?", options: ["Dulce", "Salado", "Ambos"], answer: 1 }
+            // Puedes agregar el resto aquí...
+        ];
+
+        let currentQuestionIndex = 0;
+        let currentScore = 0;
         let timeRemaining = 15;
         let timerInterval;
         let hasAnswered = false;
+        let playerNickname = sessionStorage.getItem('currentPlayer') || 'Invitado';
 
-        timerBar.classList.add('animate-timer');
+        // 3.1 Algoritmo para barajar aleatoriamente (Fisher-Yates)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
 
+        // Barajamos las preguntas al entrar para que cada jugador tenga un orden único
+        shuffleArray(quizQuestions);
+
+        // 3.2 Inyección dinámica de la pregunta
+        function loadQuestion() {
+            if (currentQuestionIndex >= quizQuestions.length) {
+                finishQuiz();
+                return;
+            }
+
+            hasAnswered = false;
+            timeRemaining = 15;
+            
+            const currentQ = quizQuestions[currentQuestionIndex];
+            
+            // Animación de entrada
+            questionText.style.opacity = 0;
+            optionsContainer.style.opacity = 0;
+
+            setTimeout(() => {
+                questionText.innerText = currentQ.question;
+                optionsContainer.innerHTML = ''; // Limpiar opciones anteriores
+
+                currentQ.options.forEach((opt, index) => {
+                    const isCorrect = index === currentQ.answer;
+                    const btnHTML = `
+                        <button class="quiz-option glass-btn relative overflow-hidden w-full py-5 px-6 rounded-2xl border border-white/10 bg-white/5 text-left font-semibold text-zinc-200 transition-all duration-200 active:scale-[0.98] flex justify-between items-center group" data-correct="${isCorrect}">
+                            <span class="relative z-10 pointer-events-none">${opt}</span>
+                            <div class="w-5 h-5 rounded-full border-2 border-white/20 group-active:border-rose-400 relative z-10 pointer-events-none"></div>
+                            <span class="ripple absolute bg-white/20 rounded-full pointer-events-none transform scale-0"></span>
+                        </button>
+                    `;
+                    optionsContainer.insertAdjacentHTML('beforeend', btnHTML);
+                });
+
+                questionText.style.opacity = 1;
+                optionsContainer.style.opacity = 1;
+
+                attachTouchEvents();
+                
+                // Reiniciar animación del temporizador
+                timerBar.classList.remove('animate-timer');
+                void timerBar.offsetWidth; // Trigger reflow nativo
+                timerBar.classList.add('animate-timer');
+                timerBar.style.animationPlayState = 'running';
+                
+                startTimer();
+            }, 300);
+        }
+
+        // 3.3 Control del Temporizador
         function startTimer() {
+            clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 timeRemaining--;
-                
                 if (timeRemaining <= 0) {
                     clearInterval(timerInterval);
                     timerBar.style.animationPlayState = 'paused';
-                    if (!hasAnswered) {
-                        revealAnswers(); 
-                    }
+                    if (!hasAnswered) processAnswer(null); 
                 }
             }, 1000);
         }
 
-        startTimer();
-
-        options.forEach(button => {
-            button.addEventListener('click', function() {
-                if (hasAnswered) return;
-                hasAnswered = true;
+        // 3.4 Interacciones táctiles dinámicas
+        function attachTouchEvents() {
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(button => {
                 
-                clearInterval(timerInterval);
-                timerBar.style.animationPlayState = 'paused';
-
-                this.classList.add('selected');
-                options.forEach(opt => opt.classList.add('disabled'));
-
-                setTimeout(() => {
-                    revealAnswers(this);
-                }, 1500);
-            });
-        });
-
-        function revealAnswers(selectedButton = null) {
-            options.forEach(opt => {
-                opt.classList.remove('selected');
-                
-                if (opt.dataset.correct === "true") {
-                    opt.classList.add('correct');
+                // Efecto Ripple
+                button.addEventListener('touchstart', function(e) {
+                    if (hasAnswered) return;
+                    const touch = e.touches[0];
+                    const rect = this.getBoundingClientRect();
+                    const x = touch.clientX - rect.left;
+                    const y = touch.clientY - rect.top;
+                    const ripple = this.querySelector('.ripple');
                     
-                    if (selectedButton === opt) {
-                        const scoreDisplay = document.getElementById('score-display');
-                        let currentScore = parseInt(scoreDisplay.innerText);
-                        scoreDisplay.innerText = currentScore + 100;
-                        
-                        scoreDisplay.classList.add('text-green-400', 'scale-125', 'transition-transform');
-                        setTimeout(() => scoreDisplay.classList.remove('text-green-400', 'scale-125'), 500);
-                    }
-                } else {
-                    opt.classList.add('incorrect');
-                }
+                    ripple.classList.remove('animate');
+                    ripple.style.width = ripple.style.height = `${Math.max(rect.width, rect.height)}px`;
+                    ripple.style.left = `${x - rect.width / 2}px`;
+                    ripple.style.top = `${y - rect.height / 2}px`;
+                    ripple.style.opacity = '1';
+                    ripple.style.transform = 'scale(0)';
+
+                    window.requestAnimationFrame(() => ripple.classList.add('animate'));
+                    if (navigator.vibrate) navigator.vibrate(15);
+                }, { passive: true });
+
+                // Selección de respuesta
+                button.addEventListener('click', function() {
+                    if (hasAnswered) return;
+                    processAnswer(this);
+                });
             });
+        }
+
+        // 3.5 Procesamiento de la respuesta y actualización en tiempo real
+        function processAnswer(selectedButton) {
+            hasAnswered = true;
+            clearInterval(timerInterval);
+            timerBar.style.animationPlayState = 'paused';
+
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.classList.add('disabled'));
+
+            if (selectedButton) selectedButton.classList.add('selected');
 
             setTimeout(() => {
-                console.log("Transición a la siguiente pregunta...");
-            }, 3000);
+                options.forEach(opt => {
+                    opt.classList.remove('selected');
+                    if (opt.dataset.correct === "true") {
+                        opt.classList.add('correct');
+                        if (selectedButton === opt) {
+                            // Sumar puntos por velocidad (estilo Kahoot) o fijos
+                            const pointsEarned = 100 + (timeRemaining * 10);
+                            currentScore += pointsEarned;
+                            scoreDisplay.innerText = currentScore;
+                            
+                            scoreDisplay.classList.add('text-green-400', 'scale-125');
+                            setTimeout(() => scoreDisplay.classList.remove('text-green-400', 'scale-125'), 500);
+
+                            // AQUÍ CONECTAS CON SUPABASE:
+                            // updateSupabaseScore(playerNickname, currentScore);
+                        }
+                    } else {
+                        opt.classList.add('incorrect');
+                    }
+                });
+
+                // Avanzar a la siguiente pregunta
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    loadQuestion();
+                }, 2500);
+            }, 1000);
         }
+
+        function finishQuiz() {
+            questionText.innerText = "¡Completado!";
+            optionsContainer.innerHTML = `<div class="text-rose-200 text-lg">Puntaje final: ${currentScore}</div>`;
+            // Redirigir a leaderboard.html
+        }
+
+        // Inicializar la primera pregunta
+        loadQuestion();
     }
 });
+    
