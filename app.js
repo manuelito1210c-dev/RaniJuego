@@ -6,15 +6,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Generador de Corazones Flotantes
     const heartsContainer = document.getElementById('floating-hearts-container');
+    
     if (heartsContainer) {
         function spawnHeart() {
             const heart = document.createElement('div');
             heart.classList.add('floating-heart');
+            
             heart.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#be123c" class="w-full h-full opacity-60">
                     <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
                 </svg>
             `;
+
             const size = Math.random() * 15 + 10; 
             heart.style.width = `${size}px`;
             heart.style.height = `${size}px`;
@@ -22,25 +25,30 @@ document.addEventListener('DOMContentLoaded', () => {
             heart.style.animationDuration = `${Math.random() * 5 + 7}s`; 
             
             heartsContainer.appendChild(heart);
-            setTimeout(() => heart.remove(), 12000); 
+
+            setTimeout(() => {
+                heart.remove(); 
+            }, 12000);
         }
 
         for(let i=0; i<6; i++) spawnHeart(); 
         setInterval(spawnHeart, 1500); 
     }
 
-    // Efecto Ripple Táctil Unificado
+    // Efecto Ripple Táctil
     const rippleButtons = document.querySelectorAll('.btn-border-beam, .quiz-option');
     rippleButtons.forEach(btn => {
         btn.addEventListener('touchstart', function(e) {
             const touch = e.touches[0];
             const rect = this.getBoundingClientRect();
+            
             const x = touch.clientX - rect.left;
             const y = touch.clientY - rect.top;
 
             const ripple = this.querySelector('.ripple');
             if (ripple) {
                 ripple.classList.remove('animate');
+                
                 const size = Math.max(rect.width, rect.height);
                 ripple.style.width = ripple.style.height = `${size}px`;
                 ripple.style.left = `${x - size / 2}px`;
@@ -48,12 +56,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 ripple.style.opacity = '1';
                 ripple.style.transform = 'scale(0)';
 
-                window.requestAnimationFrame(() => ripple.classList.add('animate'));
+                window.requestAnimationFrame(() => {
+                    ripple.classList.add('animate');
+                });
             }
+
             if (navigator.vibrate) navigator.vibrate(15); 
         }, { passive: true });
     });
-
 
     // ==========================================
     // 2. LÓGICA: PANTALLA DE INGRESO (index.html)
@@ -61,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnStart = document.getElementById('btn-start');
     const nicknameInput = document.getElementById('nickname');
 
-    // La condición 'if' asegura que esto solo corra en el index
     if (btnStart && nicknameInput) {
         btnStart.addEventListener('click', () => {
             const nickname = nicknameInput.value.trim();
@@ -89,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = 'quiz.html'; 
             }, 500);
         });
-    
+    } // <-- ¡FALTABA ESTA LLAVE DE CIERRE AQUÍ!
 
     // ==========================================
     // 3. LÓGICA: PANTALLA DE JUEGO (quiz.html)
@@ -101,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (timerBar && questionText && optionsContainer) {
         
-        // Base de datos local de preguntas
         const quizQuestions = [
             { question: "¿Cuál es su comida favorita absoluta?", options: ["Matambre a la pizza", "Empanadas de carne con limón", "Pizza", "Milanesas Napolitanas con Papas"], answer: 1 },
             { question: "¿Cuál es su color favorito?", options: ["Rosa", "Le gustan todos los colores", "Bordó", "Rojo"], answer: 1 },
@@ -109,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { question: "Si pudiera viajar a cualquier lugar del mundo mañana mismo, ¿a dónde iría?", options: ["París", "Venecia", "Misiones (las Cataratas)", "Chaco"], answer: 0 },
             { question: "¿Qué bebida es su favorita?", options: ["Fernet", "Vino", "Gancia", "Gin Tonic"], answer: 3 },
             { question: "¿Prefiere el dulce o el salado?", options: ["Dulce", "Salado", "Ambos"], answer: 1 }
-            // Puedes agregar el resto aquí...
+            // Agrega aquí el resto de las preguntas...
         ];
 
         let currentQuestionIndex = 0;
@@ -119,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let hasAnswered = false;
         let playerNickname = sessionStorage.getItem('currentPlayer') || 'Invitado';
 
-        // 3.1 Algoritmo para barajar aleatoriamente (Fisher-Yates)
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -127,10 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Barajamos las preguntas al entrar para que cada jugador tenga un orden único
         shuffleArray(quizQuestions);
 
-        // 3.2 Inyección dinámica de la pregunta
         function loadQuestion() {
             if (currentQuestionIndex >= quizQuestions.length) {
                 finishQuiz();
@@ -142,13 +147,12 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const currentQ = quizQuestions[currentQuestionIndex];
             
-            // Animación de entrada
             questionText.style.opacity = 0;
             optionsContainer.style.opacity = 0;
 
             setTimeout(() => {
                 questionText.innerText = currentQ.question;
-                optionsContainer.innerHTML = ''; // Limpiar opciones anteriores
+                optionsContainer.innerHTML = ''; 
 
                 currentQ.options.forEach((opt, index) => {
                     const isCorrect = index === currentQ.answer;
@@ -167,9 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 attachTouchEvents();
                 
-                // Reiniciar animación del temporizador
                 timerBar.classList.remove('animate-timer');
-                void timerBar.offsetWidth; // Trigger reflow nativo
+                void timerBar.offsetWidth; 
                 timerBar.classList.add('animate-timer');
                 timerBar.style.animationPlayState = 'running';
                 
@@ -177,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 300);
         }
 
-        // 3.3 Control del Temporizador
         function startTimer() {
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
@@ -190,12 +192,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 1000);
         }
 
-        // 3.4 Interacciones táctiles dinámicas
         function attachTouchEvents() {
             const options = document.querySelectorAll('.quiz-option');
             options.forEach(button => {
                 
-                // Efecto Ripple
                 button.addEventListener('touchstart', function(e) {
                     if (hasAnswered) return;
                     const touch = e.touches[0];
@@ -204,18 +204,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     const y = touch.clientY - rect.top;
                     const ripple = this.querySelector('.ripple');
                     
-                    ripple.classList.remove('animate');
-                    ripple.style.width = ripple.style.height = `${Math.max(rect.width, rect.height)}px`;
-                    ripple.style.left = `${x - rect.width / 2}px`;
-                    ripple.style.top = `${y - rect.height / 2}px`;
-                    ripple.style.opacity = '1';
-                    ripple.style.transform = 'scale(0)';
+                    if (ripple) {
+                        ripple.classList.remove('animate');
+                        ripple.style.width = ripple.style.height = `${Math.max(rect.width, rect.height)}px`;
+                        ripple.style.left = `${x - rect.width / 2}px`;
+                        ripple.style.top = `${y - rect.height / 2}px`;
+                        ripple.style.opacity = '1';
+                        ripple.style.transform = 'scale(0)';
 
-                    window.requestAnimationFrame(() => ripple.classList.add('animate'));
+                        window.requestAnimationFrame(() => ripple.classList.add('animate'));
+                    }
                     if (navigator.vibrate) navigator.vibrate(15);
                 }, { passive: true });
 
-                // Selección de respuesta
                 button.addEventListener('click', function() {
                     if (hasAnswered) return;
                     processAnswer(this);
@@ -223,7 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-                // 3.5 Procesamiento de la respuesta y actualización en tiempo real
         function processAnswer(selectedButton) {
             hasAnswered = true;
             clearInterval(timerInterval);
@@ -240,7 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (opt.dataset.correct === "true") {
                         opt.classList.add('correct');
                         if (selectedButton === opt) {
-                            // Sumar puntos por velocidad (estilo Kahoot)
                             const pointsEarned = 100 + (timeRemaining * 10);
                             currentScore += pointsEarned;
                             scoreDisplay.innerText = currentScore;
@@ -248,9 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             scoreDisplay.classList.add('text-green-400', 'scale-125');
                             setTimeout(() => scoreDisplay.classList.remove('text-green-400', 'scale-125'), 500);
 
-                            // ==========================================
-                            // 🔥 INTEGRACIÓN SUPABASE REALTIME 🔥
-                            // ==========================================
+                            // Envío de broadcast en vivo
                             if (typeof window.broadcastScore === 'function') {
                                 window.broadcastScore(currentScore);
                             }
@@ -260,7 +257,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-                // Avanzar a la siguiente pregunta
                 setTimeout(() => {
                     currentQuestionIndex++;
                     loadQuestion();
@@ -268,8 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 1000);
         }
 
-                function finishQuiz() {
-            // Estado visual de finalización
+        function finishQuiz() {
             questionText.style.opacity = 0;
             optionsContainer.style.opacity = 0;
             
@@ -287,38 +282,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 optionsContainer.style.opacity = 1;
             }, 300);
 
-            // 1. Último broadcast para actualizar la UI de los demás celulares
+            // 1. Último broadcast a la sala
             if (typeof window.broadcastScore === 'function') {
                 window.broadcastScore(currentScore);
             }
 
-            // 2. Guardar el puntaje oficialmente en la base de datos
+            // 2. Persistencia en la Base de Datos
             if (typeof window.guardarPuntajeFinal === 'function') {
                 window.guardarPuntajeFinal(playerNickname, currentScore);
             }
 
-            // Guardamos el puntaje final en la sesión para que leaderboard.js pueda leerlo si es necesario
+            // 3. Guardar localmente para la pantalla de Leaderboard
             sessionStorage.setItem('finalScore', currentScore);
 
-            // Redirigir a la pantalla del ranking (Leaderboard) después de 3 segundos
-            setTimeout(() => {
-                window.location.href = 'leaderboard.html';
-            }, 3000);
-                }
-        
-            // Un último broadcast de seguridad para asegurar que el ranking tenga el dato final
-            if (typeof window.broadcastScore === 'function') {
-                window.broadcastScore(currentScore);
-            }
-
-            // Redirigir a la pantalla del ranking (Leaderboard) después de 3 segundos
             setTimeout(() => {
                 window.location.href = 'leaderboard.html';
             }, 3000);
         }
 
-        // Inicializar la primera pregunta
         loadQuestion();
     }
 });
-    
+        
