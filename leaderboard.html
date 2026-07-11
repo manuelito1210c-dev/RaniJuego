@@ -89,6 +89,7 @@
             </ul>
         </div>
 
+
         <!-- Botón Volver a jugar -->
         <button id="btn-restart" class="btn-border-beam w-full py-4 text-sm font-bold tracking-widest text-zinc-100 uppercase relative overflow-hidden active:scale-95 transition-transform duration-200 mt-auto flex justify-center items-center">
             <span class="relative z-10 drop-shadow-md">Volver al Inicio</span>
@@ -96,10 +97,13 @@
         </button>
     </main>
 
-    <!-- Scripts (Asegúrate de incluir Supabase antes de tus archivos locales) -->
+    <!-- 1. Motor de Base de Datos -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="realtime.js"></script> <!-- El motor de Supabase -->
-    <script src="leaderboard.js"></script> <!-- Lógica específica del ranking -->
+    <!-- 2. Conexión Realtime y funciones globales de BD -->
+    <script src="realtime.js"></script> 
+    <!-- 3. Efectos visuales globales (Corazones y Ripple táctil) -->
+    <script src="app.js"></script> 
+    <!-- 4. Lógica específica del ranking -->
+    <script src="leaderboard.js"></script> 
 </body>
-                  </html>
-                  
+</html>
