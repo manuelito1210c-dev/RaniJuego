@@ -98,5 +98,22 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => toast.remove(), 300);
         }, 3000);
     }
+        // ==========================================
+    // 6. GUARDAR PUNTAJE FINAL EN BASE DE DATOS
+    // ==========================================
+    
+    window.guardarPuntajeFinal = async function(nickname, puntajeFinal) {
+        // Usamos el cliente 'supabase' que ya inicializaste al principio de este archivo
+        const { data, error } = await supabase
+            .from('jugadores')
+            .insert([{ nickname: nickname, score: puntajeFinal }]);
+
+        if (error) {
+            console.error('❌ Error al guardar en la base de datos:', error);
+        } else {
+            console.log('✅ Puntaje guardado con éxito en la tabla jugadores:', puntajeFinal);
+        }
+    };
+    
 });
 
