@@ -109,9 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('✅ Puntaje guardado con éxito en la tabla jugadores:', puntajeFinal);
         }
     };
-    
-});
-// Diagnóstico en pantalla
+    // Diagnóstico en pantalla
 window.onerror = function(msg, url, line) {
     const errorDiv = document.createElement('div');
     errorDiv.style.position = 'fixed';
@@ -125,3 +123,5 @@ window.onerror = function(msg, url, line) {
     document.body.appendChild(errorDiv);
 };
 
+    
+});
